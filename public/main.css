@@ -17,3 +17,15 @@
     padding: 20px;
     vertical-align: top;
 }
+
+.addDirectory {
+    cursor: pointer;
+}
+
+.addNote {
+    cursor: pointer;
+}
+
+.removeElement {
+    cursor: pointer;
+}

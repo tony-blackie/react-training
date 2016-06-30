@@ -47,9 +47,12 @@ var ControlBox = React.createClass({
 
 
 var AddDirectory = React.createClass({
+   handleClick: function() {
+       console.log("clicked");
+   },
    render: function() {
        return (
-           <div className="addDirectory">
+           <div className="addDirectory" onClick={this.handleClick}>
                <i className="fa fa-plus" aria-hidden="true"></i> {"Add folder"}
            </div>
        );
@@ -80,10 +83,9 @@ var DirectoryBox = React.createClass({
     render: function() {
         var DirectoryNodes = this.props.data.map(function(dir) {
             return (
-            <div name={dir.name} key={dir.id}>
-                <i className="fa fa-folder-open" aria-hidden="true"></i>
-                {dir.name}
-            </div>
+            <Directory name={dir.name} key={dir.id}>
+
+            </Directory>
             );
         });
         return (
@@ -96,7 +98,10 @@ var DirectoryBox = React.createClass({
 var Directory = React.createClass({
     render: function() {
         return (
-            <div className="directory"></div>
+            <div className="directory">
+                <i className="fa fa-folder-open" aria-hidden="true"></i>
+                {" " + this.props.name}
+            </div>
         )
     }
 });
