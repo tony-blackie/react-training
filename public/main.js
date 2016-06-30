@@ -4,14 +4,6 @@ var NoteManager = React.createClass({
             data: []
         };
     },
-    render: function() {
-        return (
-            <div className="noteManager">
-                <ControlBox/>
-                <DirectoryBox url="/directories"  data={this.state.data}/>
-            </div>
-        );
-    },
     loadDataFromServer: function() {
         $.ajax({
             url: this.props.url,
@@ -30,14 +22,35 @@ var NoteManager = React.createClass({
     componentDidMount: function() {
         this.loadDataFromServer();
         setInterval(this.loadDataFromServer, this.props.pollInterval);
+    },
+    handleFolderAdd: function(folder) {
+        this.setState({
+            folder: folder
+        });
+    },
+    render: function() {
+        return (
+            <div className="noteManager">
+                <ControlBox handleFolderAdd={this.handleFolderAdd}/>
+                <DirectoryBox url="/directories"  data={this.state.data} folder={this.state.folder}/>
+            </div>
+        );
     }
 });
 
 var ControlBox = React.createClass({
+    getInitialState: function() {
+        return {
+            data: {}
+        };
+    },
+    handleFolderAdd: function(data) {
+        this.props.handleFolderAdd(data);
+    },
     render: function() {
         return (
             <div className="controlBox">
-                <AddDirectory/>
+                <AddDirectory onFolderAdd={this.handleFolderAdd}/>
                 <AddNote/>
                 <RemoveElement/>
             </div>
@@ -47,16 +60,22 @@ var ControlBox = React.createClass({
 
 
 var AddDirectory = React.createClass({
-   handleClick: function() {
-       console.log("clicked");
-   },
-   render: function() {
-       return (
+    getInitialState: function() {
+        return {
+            data: {}
+        };
+    },
+    handleClick: function() {
+       var data = {addDirectory: true, name: "newDir"};
+       this.props.onFolderAdd(data);
+    },
+    render: function() {
+        return (
            <div className="addDirectory" onClick={this.handleClick}>
                <i className="fa fa-plus" aria-hidden="true"></i> {"Add folder"}
            </div>
-       );
-   }
+        );
+    }
 });
 
 var AddNote = React.createClass({
@@ -81,7 +100,14 @@ var RemoveElement = React.createClass({
 
 var DirectoryBox = React.createClass({
     render: function() {
-        var DirectoryNodes = this.props.data.map(function(dir) {
+        console.log(this.props.folder); //TODO: Push folder name to server and generate id there
+        console.log(this.props.data);   //TODO: And just get folders from server
+        var allFolders = this.props.data;
+        if (this.props.folder) {
+            allFolders.push(this.props.folder);
+            //this.state.folder = '';
+        }
+        var DirectoryNodes = allFolders.map(function(dir) {
             return (
             <Directory name={dir.name} key={dir.id}>
 
